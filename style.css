@@ -1,0 +1,79 @@
+* {
+	box-sizing: border-box;
+}
+
+body {
+    padding-top: 50px;
+}
+
+header {
+	text-align: center;
+}
+
+.category-header {
+	margin-bottom: 5px;
+}
+
+ul {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    text-align: center;
+}
+
+li {
+	margin-left: 10px;
+}
+
+.card-bucket {
+    padding: 40px 15px;
+    text-align: center;
+}
+
+.category-card {
+	display: inline-block;
+	border-radius: 10px;
+/*	border: 3px solid white;*/
+	background-color: white;
+	width: 250px;
+	vertical-align: top;
+	cursor: pointer;
+	margin: 2px;
+	padding: 8px 2px 5px 2px;
+}
+
+.category-header {
+	padding: 0px 20px;
+	margin: 0;
+}
+
+.task-list {
+	margin-right: 6px;
+}
+
+.cell-style {
+	border-radius: 5px;
+	padding: 10px 20px;
+	margin: 4px;
+	width: 220px;	
+}
+
+.task-cell {
+ 
+}
+
+.new-task-btn {
+	border: dashed 2px #67dd00;
+	color: #67dd00;
+}
+
+
+.active-category {
+/*	border: #333 3px solid;*/
+    background-color: #eee;
+    box-shadow: 3px 3px #ccc;
+}
+
+.hidden {
+	display: none;
+}
