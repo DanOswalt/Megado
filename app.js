@@ -45,7 +45,7 @@
     function displayNewCard(category) {
 
         var card =  "<div class='category-card'>";
-            card += "<h2 class='category-header'>";
+            card += "<h2 class='category-header cell-style'>";
             card += category.name;
             card += "</h2>";
             card += "<span class='glyphicon glyphicon-plus-sign new-task-btn cell-style hidden'></span>"

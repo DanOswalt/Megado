@@ -10,19 +10,22 @@ header {
 	text-align: center;
 }
 
-.category-header {
-	margin-bottom: 5px;
-}
-
 ul {
     padding: 0;
-    margin: 0;
+    margin: 15px auto 0;
     list-style-type: none;
     text-align: center;
 }
 
+.cell-style {
+	border-radius: 5px;
+	padding: 10px 20px;
+	margin: 4px auto;
+	width: 220px;	
+}
+
 li {
-	margin-left: 10px;
+	margin-left: 0px;
 }
 
 .card-bucket {
@@ -33,7 +36,6 @@ li {
 .category-card {
 	display: inline-block;
 	border-radius: 10px;
-/*	border: 3px solid white;*/
 	background-color: white;
 	width: 250px;
 	vertical-align: top;
@@ -43,23 +45,13 @@ li {
 }
 
 .category-header {
-	padding: 0px 20px;
-	margin: 0;
+	padding: 5px 10px;
+	background-color: #333;
+	color: white;
 }
 
 .task-list {
-	margin-right: 6px;
-}
 
-.cell-style {
-	border-radius: 5px;
-	padding: 10px 20px;
-	margin: 4px;
-	width: 220px;	
-}
-
-.task-cell {
- 
 }
 
 .new-task-btn {
