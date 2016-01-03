@@ -8,11 +8,25 @@
     var categories = [];
     var activeCategoryIndex = null;
     var $activeCategoryCard = null;
-
-    var $newTaskBtn = $('.new-task-btn');//testing this
+    var $newTaskBtn = $('.new-task-btn');
     var $newCategoryBtn = $('#new-cat-btn');
     var $categoryCard = $('.category-card');
     var $cardBucket = $('.card-bucket');
+    // var $taskSubmitBtn = $('.taskSubmitBtn');
+    var $daysSubmitBtn = $('.daysSubmitBtn');
+    var $taskField = $('.taskField');
+    var $daysField = $('.daysField');
+
+    var taskName = "";
+    var taskDays = 0;
+
+    // $('body').on('click', function() {
+    //     activeCategoryIndex = null;
+    //     $activeCategoryCard = null;
+    //     $('.category-card').removeClass('active-category');
+    // })
+
+    //new category listener:
 
     $newCategoryBtn.on('click', function(){
         var category = newCategory();
@@ -20,42 +34,166 @@
         displayNewCard(category);
     })
 
+    //cardbucket listeners:
+
     $cardBucket.on('click', '.new-task-btn', function() {
-        var task = newTask();
-        categories[activeCategoryIndex].tasks.push(task);
-        refreshTaskDisplay($activeCategoryCard, categories[activeCategoryIndex].tasks);
-        console.log($activeCategoryCard);
+        //target .new-task-btn clicks from cardBucket
+
+        $('.new-task-btn').hide();
+        displayNewTaskForm($activeCategoryCard);
+        $('.taskField').focus();
+
     });
 
-    //when click is detected in .card-bucket, target the .category-card that was clicked,
-    //appended .category-cards won't work if the event is bound to the .category-card
-
     $cardBucket.on('click', '.category-card', function() {
+        //target .category-card clicks from cardBucket
+
         activeCategoryIndex = $(this).index();
         $activeCategoryCard = $('.category-card').eq(activeCategoryIndex);
         $cardBucket.children().removeClass('active-category');
         $(this).addClass('active-category');
         $newTaskBtn.removeClass('hidden');
-
-        //test new task button
         $('.new-task-btn').addClass('hidden');
         $activeCategoryCard.find('.new-task-btn').removeClass('hidden');
     });
 
+    //newTaskForm listeners:
+
+    $cardBucket.on('keyup', '.taskField', function(){
+        //log the value and enable button if there's something typed
+        var $taskSubmitBtn = $('.taskSubmitBtn');
+        taskName = $(this).val();
+        console.log(taskName);
+
+        if(taskName.length > 0) {
+            $taskSubmitBtn.removeClass('disabled');
+        } else {
+            $taskSubmitBtn.addClass('disabled');
+        };
+        
+    });
+
+    //submit on button click
+
+    $cardBucket.on('click', '.taskSubmitBtn', function(){
+        submitTaskName();
+    });
+
+    //submit on enter
+
+    $cardBucket.on('keyup', function(e){
+        if (e.which === 13) {
+            submitTaskName();
+        }
+    });
+
+    $cardBucket.on('change', '.daysField', function(){
+        //log the value and enable button if there's something typed
+        var $daysSubmitBtn = $('.daysSubmitBtn');
+        taskDays = parseInt($(this).val());
+        console.log(taskName);
+
+        if(taskDays > 0) {
+            $daysSubmitBtn.removeClass('disabled');
+        } else {
+            $daysSubmitBtn.addClass('disabled');
+        };       
+    });
+
+    $cardBucket.on('click', '.daysSubmitBtn', function(){
+        submitTaskDay();
+    });
+
+    $cardBucket.on('keyup', function(e){
+        if (e.which === 13) {
+            submitTaskDay();
+        }
+    });
+
+    function submitTaskName() {
+        console.log('taskSubmitBtn clicked');
+
+        if($('.taskSubmitBtn').hasClass('disabled')) {return};
+
+        $('.taskFieldContainer')
+            .addClass('hidden') //hide task input
+            .next() //traverse to days input div
+            .removeClass('hidden'); //show days input
+        $('.daysField').focus();
+    }
+
+    function submitTaskDay() {
+        console.log('daysSubmitBtn clicked');
+        //create new task, display new task, and reset variables
+
+        if($('.daysSubmitBtn').hasClass('disabled')) {return};
+
+        console.log(taskName);
+        console.log(taskDays);
+        console.log(typeof taskDays);
+
+        //add and display the new task
+        newTask(taskName, taskDays);
+        refreshTaskDisplay($activeCategoryCard, categories[activeCategoryIndex].tasks);
+
+        //reset name and days vars
+        taskName = "";
+        taskDays = 0;
+
+        //disable buttons
+        $('.taskSubmitBtn').addClass('disabled');
+        $('.daysSubmitBtn').addClass('disabled');
+
+        //reset the fields
+        $('.taskField').val("");
+        $('.daysField').val(0);
+
+        //hide the container, reset display for next new task
+        $('.daysFieldContainer').addClass('hidden') //hide day container
+        $('.newTaskFormCell').addClass('hidden'); //hide entire form container
+        $('.taskFieldContainer').removeClass('hidden'); //show the task container for next time
+        $('.new-task-btn').show(); //show the new task button
+    }
+
+    function displayNewTaskForm($card) {
+        $card.find('.newTaskFormCell').removeClass('hidden');
+    }
+
     function displayNewCard(category) {
 
+        var newTaskBtnHTML = "<div class='new-task-btn cell-style hidden'><span class='glyphicon glyphicon-plus-sign'></span></div>";
         var card =  "<div class='category-card'>";
             card += "<h2 class='category-header cell-style'>";
             card += category.name;
             card += "</h2>";
-            card += "<span class='glyphicon glyphicon-plus-sign new-task-btn cell-style hidden'></span>"
+            card += createNewTaskFormCell();
+            card += newTaskBtnHTML;
             card += "</div>";
         $cardBucket.append(card);
     }
 
-    function refreshTaskDisplay($card, tasks) {
+    function createNewTaskFormCell() {
+        var newTaskFormHTML =  "<div class='newTaskFormCell cell-style hidden'>";
 
-        console.log("tasks:" + tasks[0]);
+            //taskFieldContainer
+            newTaskFormHTML += "<div class='taskFieldContainer'>"//hide
+            newTaskFormHTML += "<input class='taskField taskInputStyle' type='text' name='name' placeholder='Task Name'>";
+            newTaskFormHTML += "<div class='taskSubmit'><span class='glyphicon taskSubmitBtn glyphicon-circle-arrow-right disabled'></span></div>";
+            newTaskFormHTML += "</div>";
+
+            //daysFieldContainer
+            newTaskFormHTML += "<div class='daysFieldContainer hidden'>"//hide
+            newTaskFormHTML += "<div class='daysLabel'><span>Days:</span></div>"
+            newTaskFormHTML += "<input class='daysField taskInputStyle' type='number' name='days' placeholder='0'>";
+            newTaskFormHTML += "<div class='daysSubmit'><span class='glyphicon daysSubmitBtn glyphicon-plus-sign disabled'></span></div>";
+            newTaskFormHTML += "</div>";
+
+            newTaskFormHTML += "</div>";
+
+            return newTaskFormHTML;
+    }
+
+    function refreshTaskDisplay($card, tasks) {
 
         $card.children('.task-list').remove();
 
@@ -75,6 +213,8 @@
                 cell += '</li>';
 
             $card.find('.task-list').append(cell);
+
+            console.log(hrs_left)
 
         }
 
@@ -166,26 +306,12 @@
         return new Category(name);
     }
 
-    function newTask() {
+    function newTask(name, days) {
 
-        var name = "",
-            days = 0,
-            task;
+        var task = new Task(name, days);
 
-        while(true) {
-            name = prompt("What's the task called?");
-            if(name === 'cancel') return;
-            if(name !== '' && name !== 'undefined') break;
-        }
+        categories[activeCategoryIndex].tasks.push(task);
 
-        while(true) {
-            days = prompt("Repeat every how many days?");
-            if(days === 'cancel') return;
-            days = parseInt(days);
-            if(days > 0 && isNaN(days) === false) break;
-        }
-
-        return new Task(name, days);
     }
 
     function printTasks(tasks) {
@@ -203,14 +329,6 @@
             console.log('Color:' + tasks[i].color);
             console.log('*************************');
         }
-    }
-
-    function isInt(n){
-        return Number(n) === n && n % 1 === 0;
-    }
-
-    function isFloat(n){
-        return n === Number(n) && n % 1 !== 0;
     }
 
 })();

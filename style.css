@@ -54,9 +54,60 @@ li {
 
 }
 
+.newTaskFormCell {
+	margin-top: 4px;
+	border: dashed 2px #67dd00;
+	color: black;
+	padding: 5px 0;
+}
+
+.taskInputStyle {
+	border: none;
+	background-color: #eee;
+	font-size: 22px;
+	color: #333;
+}
+
+:focus {
+  	outline-color: transparent;
+  	outline-style: none;
+}
+
+.taskField {
+	width: 125px;
+}
+
+.daysField {
+	width: 35px;
+}
+
 .new-task-btn {
 	border: dashed 2px #67dd00;
+	font-size: 24px;
+	padding: 5px 0;
+}
+
+.glyphicon {
 	color: #67dd00;
+	vertical-align: middle;
+	margin-bottom: 3px;
+}
+
+.taskSubmit {
+	display: inline-block;
+	font-size: 24px ;
+}
+
+.daysSubmit {
+	display: inline-block;
+	font-size: 24px ;
+}
+
+.daysLabel {
+	display: inline-block;
+	font-size: 24px;
+	color: #333;
+	margin-right: 30px;
 }
 
 
@@ -64,6 +115,11 @@ li {
 /*	border: #333 3px solid;*/
     background-color: #eee;
     box-shadow: 3px 3px #ccc;
+}
+
+.disabled {
+	color: #333;
+	cursor: default;
 }
 
 .hidden {
