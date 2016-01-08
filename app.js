@@ -20,12 +20,6 @@
     var taskName = "";
     var taskDays = 0;
 
-    // $('body').on('click', function() {
-    //     activeCategoryIndex = null;
-    //     $activeCategoryCard = null;
-    //     $('.category-card').removeClass('active-category');
-    // })
-
     //new category listener:
 
     $newCategoryBtn.on('click', function(){
@@ -220,6 +214,9 @@
 
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////////////////
     //data functions
 
     function Category(name) {
