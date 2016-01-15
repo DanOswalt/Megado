@@ -219,6 +219,16 @@
     //////////////////////////////////////////////////////////////////////////////////////
     //data functions
 
+    function save(JSONobj) {
+        //save the entire data model as a JSON object string
+        localStorage.setItem('data', JSON.stringify(JSONobj))
+    }
+
+    function load() {
+        //retrieve the JSON object from 'data' and return the parsed object
+        return JSON.parse(localStorage.getItem('data'))
+    }
+
     function Category(name) {
         this.name = name;
         this.tasks = [];
