@@ -3,10 +3,13 @@
 
     console.log('jquery loaded');
 
-    //UI functions
-
-    var categories = [];
-    var activeCategoryIndex = null;
+    var userData = 
+        {
+            categories : [],
+            activeCategoryIndex : null
+        };
+    // var categories = [];
+    // var activeCategoryIndex = null;
     var $activeCategoryCard = null;
     var $newTaskBtn = $('.new-task-btn');
     var $newCategoryBtn = $('#new-cat-btn');
@@ -16,16 +19,37 @@
     var $daysSubmitBtn = $('.daysSubmitBtn');
     var $taskField = $('.taskField');
     var $daysField = $('.daysField');
-
     var taskName = "";
     var taskDays = 0;
+
+    //load any previous data
+    //no login needed, will only display if there was some previous data there
+
+    if(!window.localStorage) {
+        console.log('no localStorage support');
+    } else {
+        console.log('localStorage supported');
+        //userData is a JSON object representing a model of the current data last time the program was opened 
+        //in the browser
+        userData = load();    
+        console.log(userData);
+        //if there is any data in the current state, start cycle through categories, load each task
+        //for each
+
+        if(userData.length === 0 || userData.length === null) {
+            console.log('no data');
+        }
+
+        for (var categoryIndex = 0; categoryIndex < userData.length; categoryIndex += 1)
+    }
+
+    //UI functions////////////////////////////////////////////////////////////////////////////////////////
 
     //new category listener:
 
     $newCategoryBtn.on('click', function(){
-        // var category = newCategory();
-        // categories.push(category);
-        var category = newCategory();
+        var name = promptNewCategory();
+        var category = newCategory(name);
         displayNewCard(category);
     })
 
@@ -33,16 +57,13 @@
 
     $cardBucket.on('click', '.new-task-btn', function() {
         //target .new-task-btn clicks from cardBucket
-
         $('.new-task-btn').hide();
         displayNewTaskForm($activeCategoryCard);
         $('.taskField').focus();
-
     });
 
     $cardBucket.on('click', '.category-card', function() {
         //target .category-card clicks from cardBucket
-
         activeCategoryIndex = $(this).index();
         $activeCategoryCard = $('.category-card').eq(activeCategoryIndex);
         $cardBucket.children().removeClass('active-category');
@@ -58,8 +79,6 @@
         //log the value and enable button if there's something typed
         var $taskSubmitBtn = $('.taskSubmitBtn');
         taskName = $(this).val();
-        console.log(taskName);
-
         if(taskName.length > 0) {
             $taskSubmitBtn.removeClass('disabled');
         } else {
@@ -68,31 +87,18 @@
         
     });
 
-    //submit on button click
+    //submit task name on submit arrow click
 
     $cardBucket.on('click', '.taskSubmitBtn', function(){
         submitTaskName();
     });
 
-    //submit on enter
+    //submit task name enter key press
 
     $cardBucket.on('keyup', function(e){
         if (e.which === 13) {
             submitTaskName();
         }
-    });
-
-    $cardBucket.on('change', '.daysField', function(){
-        //log the value and enable button if there's something typed
-        var $daysSubmitBtn = $('.daysSubmitBtn');
-        taskDays = parseInt($(this).val());
-        console.log(taskName);
-
-        if(taskDays > 0) {
-            $daysSubmitBtn.removeClass('disabled');
-        } else {
-            $daysSubmitBtn.addClass('disabled');
-        };       
     });
 
     $cardBucket.on('click', '.daysSubmitBtn', function(){
@@ -105,11 +111,20 @@
         }
     });
 
+    $cardBucket.on('change', '.daysField', function(){
+        //log the value and enable button if there's something typed
+        var $daysSubmitBtn = $('.daysSubmitBtn');
+        taskDays = parseInt($(this).val());
+        console.log(taskName);
+        if(taskDays > 0) {
+            $daysSubmitBtn.removeClass('disabled');
+        } else {
+            $daysSubmitBtn.addClass('disabled');
+        };       
+    });
+
     function submitTaskName() {
-        console.log('taskSubmitBtn clicked');
-
         if($('.taskSubmitBtn').hasClass('disabled')) {return};
-
         $('.taskFieldContainer')
             .addClass('hidden') //hide task input
             .next() //traverse to days input div
@@ -118,31 +133,20 @@
     }
 
     function submitTaskDay() {
-        console.log('daysSubmitBtn clicked');
         //create new task, display new task, and reset variables
-
         if($('.daysSubmitBtn').hasClass('disabled')) {return};
-
-        console.log(taskName);
-        console.log(taskDays);
-        console.log(typeof taskDays);
-
         //add and display the new task
         newTask(taskName, taskDays);
         refreshTaskDisplay($activeCategoryCard, categories[activeCategoryIndex].tasks);
-
         //reset name and days vars
         taskName = "";
         taskDays = 0;
-
         //disable buttons
         $('.taskSubmitBtn').addClass('disabled');
         $('.daysSubmitBtn').addClass('disabled');
-
         //reset the fields
         $('.taskField').val("");
         $('.daysField').val(0);
-
         //hide the container, reset display for next new task
         $('.daysFieldContainer').addClass('hidden') //hide day container
         $('.newTaskFormCell').addClass('hidden'); //hide entire form container
@@ -224,14 +228,14 @@
 
     function save(JSONobj) {
         //save the entire data model as a JSON object string
-        localStorage.setItem('data', JSON.stringify(JSONobj))
-        console.log('data saved');
+        console.log('save userData');
+        localStorage.setItem('userData', JSON.stringify(JSONobj))
     }
 
     function load() {
         //retrieve the JSON object from 'data' and return the parsed object
-        console.log('data loaded');
-        return JSON.parse(localStorage.getItem('data'))
+        console.log('load userData');
+        return JSON.parse(localStorage.getItem('userData'))
     }
 
     //classes Category and Task
@@ -278,12 +282,13 @@
                      }    
         }
 
+        this.hrsRemaining = this.getHrsRemaining(moment(), this.deadline);
+        this.color = this.getColor(this.hrsRemaining);
+
         // this.getHrsRemaining = function(now, deadline) {
         // 	//now must be a moment()
         // 	return deadline.diff(now, 'hours');
         // };
-
-        this.hrsRemaining = this.getHrsRemaining(moment(), this.deadline);
 
         // this.getColor = function(hrs) {
         //     if(hrs < this.countdown.level0.hours) {
@@ -331,12 +336,16 @@
                 return 'black';
     };
 
-    function newCategory() {
+    function promptNewCategory() {
         while(true) {
             var name = prompt("What's the category called?");
             if(name === 'cancel') return;
             if(name !== '' && name !== 'undefined') break;
         }
+        return name;
+    }
+
+    function newCategory(name) {
         var category = new Category(name);
         categories.push(category);
         return category;
@@ -362,20 +371,6 @@
             console.log('Color:' + tasks[i].color);
             console.log('*************************');
         }
-    }
-
-    //load any previous data
-    //no login needed, will only display if there was some previous data there
-
-    if(!window.localStorage) {
-        console.log('no localStorage support');
-    } else {
-        console.log('localStorage supported');
-        //load json object
-        //recreate objects?
-        //load the categories
-        var data = load();
-        console.log(data);
     }
 
 })();
