@@ -4,10 +4,15 @@
 
 body {
     padding-top: 50px;
+    font-size: 24px;
 }
 
 header {
 	text-align: center;
+}
+
+h1 {
+	font-weight: bold;
 }
 
 ul {
@@ -83,7 +88,7 @@ li {
 
 .new-task-btn {
 	border: dashed 2px #67dd00;
-	font-size: 24px;
+/*	font-size: 24px;*/
 	padding: 5px 0;
 }
 
@@ -95,17 +100,17 @@ li {
 
 .taskSubmit {
 	display: inline-block;
-	font-size: 24px ;
+/*	font-size: 24px;*/
 }
 
 .daysSubmit {
 	display: inline-block;
-	font-size: 24px ;
+/*	font-size: 24px;*/
 }
 
 .daysLabel {
 	display: inline-block;
-	font-size: 24px;
+/*	font-size: 24px;*/
 	color: #333;
 	margin-right: 30px;
 }

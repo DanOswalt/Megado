@@ -23,8 +23,9 @@
     //new category listener:
 
     $newCategoryBtn.on('click', function(){
+        // var category = newCategory();
+        // categories.push(category);
         var category = newCategory();
-        categories.push(category);
         displayNewCard(category);
     })
 
@@ -219,15 +220,21 @@
     //////////////////////////////////////////////////////////////////////////////////////
     //data functions
 
+    //save and load
+
     function save(JSONobj) {
         //save the entire data model as a JSON object string
         localStorage.setItem('data', JSON.stringify(JSONobj))
+        console.log('data saved');
     }
 
     function load() {
         //retrieve the JSON object from 'data' and return the parsed object
+        console.log('data loaded');
         return JSON.parse(localStorage.getItem('data'))
     }
+
+    //classes Category and Task
 
     function Category(name) {
         this.name = name;
@@ -238,9 +245,8 @@
 
         this.name = name;
         this.days = days;
-        this.deadline_date = moment().date() + this.days; 
-        this.deadline = moment().date(this.deadline_date).hour(23).minute(59).second(59);
-        this.deadline_string = moment().endOf('day').add(this.days, 'days').calendar();
+        var deadline_date = moment().date() + this.days; 
+        this.deadline = moment().date(deadline_date).hour(23).minute(59).second(59);
         this.countdown = {
             level0 : {
                      hours : 0,
@@ -270,18 +276,44 @@
                      hours : 1000,
                      color : '#16bc00'
                      }    
-
         }
 
-        this.getHrsRemaining = function(now, deadline) {
-        	//now must be a moment()
-        	return deadline.diff(now, 'hours');
-        };
+        // this.getHrsRemaining = function(now, deadline) {
+        // 	//now must be a moment()
+        // 	return deadline.diff(now, 'hours');
+        // };
 
         this.hrsRemaining = this.getHrsRemaining(moment(), this.deadline);
 
-        this.getColor = function(hrs) {
-            if(hrs < this.countdown.level0.hours) {
+        // this.getColor = function(hrs) {
+        //     if(hrs < this.countdown.level0.hours) {
+        //         return this.countdown.level0.color;
+        //     } else if(hrs < this.countdown.level1.hours) {
+        //         return this.countdown.level1.color;
+        //     } else if(hrs < this.countdown.level2.hours) {
+        //         return this.countdown.level2.color;
+        //     } else if(hrs < this.countdown.level3.hours) {
+        //         return this.countdown.level3.color;
+        //     } else if(hrs < this.countdown.level4.hours) {
+        //         return this.countdown.level4.color;
+        //     } else if(hrs < this.countdown.level5.hours) {
+        //         return this.countdown.level5.color;
+        //     } else if(hrs < this.countdown.level6.hours) {
+        //         return this.countdown.level6.color;
+        //     } else
+        //         return 'black';
+        // }
+
+        this.color = this.getColor(this.hrsRemaining);
+
+    }
+
+    Task.prototype.getHrsRemaining = function(now, deadline) {
+        return deadline.diff(now, 'hours');
+    };
+
+    Task.prototype.getColor = function(hrs) {
+        if(hrs < this.countdown.level0.hours) {
                 return this.countdown.level0.color;
             } else if(hrs < this.countdown.level1.hours) {
                 return this.countdown.level1.color;
@@ -297,11 +329,7 @@
                 return this.countdown.level6.color;
             } else
                 return 'black';
-        }
-
-        this.color = this.getColor(this.hrsRemaining);
-
-    }
+    };
 
     function newCategory() {
         while(true) {
@@ -309,16 +337,14 @@
             if(name === 'cancel') return;
             if(name !== '' && name !== 'undefined') break;
         }
-
-        return new Category(name);
+        var category = new Category(name);
+        categories.push(category);
+        return category;
     }
 
     function newTask(name, days) {
-
         var task = new Task(name, days);
-
         categories[activeCategoryIndex].tasks.push(task);
-
     }
 
     function printTasks(tasks) {
@@ -336,6 +362,20 @@
             console.log('Color:' + tasks[i].color);
             console.log('*************************');
         }
+    }
+
+    //load any previous data
+    //no login needed, will only display if there was some previous data there
+
+    if(!window.localStorage) {
+        console.log('no localStorage support');
+    } else {
+        console.log('localStorage supported');
+        //load json object
+        //recreate objects?
+        //load the categories
+        var data = load();
+        console.log(data);
     }
 
 })();
