@@ -1,15 +1,8 @@
-
 (function(){
 
     console.log('jquery loaded');
 
-    var userData = 
-        {
-            categories : [],
-            activeCategoryIndex : null
-        };
-    // var categories = [];
-    // var activeCategoryIndex = null;
+    var data;
     var $activeCategoryCard = null;
     var $newTaskBtn = $('.new-task-btn');
     var $newCategoryBtn = $('#new-cat-btn');
@@ -21,32 +14,11 @@
     var $daysField = $('.daysField');
     var taskName = "";
     var taskDays = 0;
-
-    //load any previous data
-    //no login needed, will only display if there was some previous data there
-
-    if(!window.localStorage) {
-        console.log('no localStorage support');
-    } else {
-        console.log('localStorage supported');
-        //userData is a JSON object representing a model of the current data last time the program was opened 
-        //in the browser
-        userData = load();    
-        console.log(userData);
-        //if there is any data in the current state, start cycle through categories, load each task
-        //for each
-
-        if(userData.length === 0 || userData.length === null) {
-            console.log('no data');
-        }
-
-        for (var categoryIndex = 0; categoryIndex < userData.length; categoryIndex += 1)
-    }
+    var activeCategoryIndex = null;
 
     //UI functions////////////////////////////////////////////////////////////////////////////////////////
 
     //new category listener:
-
     $newCategoryBtn.on('click', function(){
         var name = promptNewCategory();
         var category = newCategory(name);
@@ -54,7 +26,6 @@
     })
 
     //cardbucket listeners:
-
     $cardBucket.on('click', '.new-task-btn', function() {
         //target .new-task-btn clicks from cardBucket
         $('.new-task-btn').hide();
@@ -137,7 +108,7 @@
         if($('.daysSubmitBtn').hasClass('disabled')) {return};
         //add and display the new task
         newTask(taskName, taskDays);
-        refreshTaskDisplay($activeCategoryCard, categories[activeCategoryIndex].tasks);
+        refreshTaskDisplay($activeCategoryCard, data.categories[activeCategoryIndex].tasks);
         //reset name and days vars
         taskName = "";
         taskDays = 0;
@@ -159,7 +130,6 @@
     }
 
     function displayNewCard(category) {
-
         var newTaskBtnHTML = "<div class='new-task-btn cell-style hidden'><span class='glyphicon glyphicon-plus-sign'></span></div>";
         var card =  "<div class='category-card'>";
             card += "<h2 class='category-header cell-style'>";
@@ -193,28 +163,21 @@
     }
 
     function refreshTaskDisplay($card, tasks) {
-
+        console.log(tasks);
         $card.children('.task-list').remove();
-
         $card.find('.category-header').after("<ul class='task-list'></ul>");
-
         for(var i = 0; i < tasks.length; i++) {
-
             var hrs_left = tasks[i].getHrsRemaining(moment(), tasks[i].deadline);
             var color = tasks[i].getColor(hrs_left);
             var name = tasks[i].name;
-
             var cell =  '<li>';
                 cell += '<div class="task-cell cell-style" style="background-color:';
                 cell += color + '">';
                 cell += name;
                 cell += '</div>';
                 cell += '</li>';
-
             $card.find('.task-list').append(cell);
-
             console.log(hrs_left)
-
         }
 
     }
@@ -228,15 +191,30 @@
 
     function save(JSONobj) {
         //save the entire data model as a JSON object string
-        console.log('save userData');
-        localStorage.setItem('userData', JSON.stringify(JSONobj))
+        console.log('save data');
+        localStorage.setItem('data', JSON.stringify(JSONobj));
     }
 
-    function load() {
+    function load(username) {
         //retrieve the JSON object from 'data' and return the parsed object
-        console.log('load userData');
-        return JSON.parse(localStorage.getItem('userData'))
+        console.log('load data');
+        return JSON.parse(localStorage.getItem('data'));
     }
+
+    function render() {
+        for (var categoryIndex = 0; categoryIndex < data.categories.length; categoryIndex += 1) {
+            var category = data.categories[categoryIndex];
+            var $card = $('.category-card').eq(categoryIndex);
+            var tasks = category.tasks;
+            displayNewCard(category);
+            refreshTaskDisplay($card, tasks);
+        }
+    }
+
+    // function clearData() {
+    //     save({});
+    // };
+    // clearData();
 
     //classes Category and Task
 
@@ -281,36 +259,8 @@
                      color : '#16bc00'
                      }    
         }
-
         this.hrsRemaining = this.getHrsRemaining(moment(), this.deadline);
         this.color = this.getColor(this.hrsRemaining);
-
-        // this.getHrsRemaining = function(now, deadline) {
-        // 	//now must be a moment()
-        // 	return deadline.diff(now, 'hours');
-        // };
-
-        // this.getColor = function(hrs) {
-        //     if(hrs < this.countdown.level0.hours) {
-        //         return this.countdown.level0.color;
-        //     } else if(hrs < this.countdown.level1.hours) {
-        //         return this.countdown.level1.color;
-        //     } else if(hrs < this.countdown.level2.hours) {
-        //         return this.countdown.level2.color;
-        //     } else if(hrs < this.countdown.level3.hours) {
-        //         return this.countdown.level3.color;
-        //     } else if(hrs < this.countdown.level4.hours) {
-        //         return this.countdown.level4.color;
-        //     } else if(hrs < this.countdown.level5.hours) {
-        //         return this.countdown.level5.color;
-        //     } else if(hrs < this.countdown.level6.hours) {
-        //         return this.countdown.level6.color;
-        //     } else
-        //         return 'black';
-        // }
-
-        this.color = this.getColor(this.hrsRemaining);
-
     }
 
     Task.prototype.getHrsRemaining = function(now, deadline) {
@@ -347,13 +297,15 @@
 
     function newCategory(name) {
         var category = new Category(name);
-        categories.push(category);
+        data.categories.push(category);
+        save(data);
         return category;
     }
 
     function newTask(name, days) {
         var task = new Task(name, days);
-        categories[activeCategoryIndex].tasks.push(task);
+        data.categories[activeCategoryIndex].tasks.push(task);
+        save(data);
     }
 
     function printTasks(tasks) {
@@ -370,6 +322,21 @@
             tasks[i].color = tasks[i].getColor(tasks[i].hrsRemaining);
             console.log('Color:' + tasks[i].color);
             console.log('*************************');
+        }
+    }
+
+    if(!window.localStorage) {
+        console.log('no localStorage support');
+    } else {
+        console.log('localStorage supported');
+        data = load();
+        console.log(data);
+        if(data.categories) {
+            render(data.categories);
+        } else {
+            data = {
+                        categories : []
+                    };
         }
     }
 
