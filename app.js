@@ -286,14 +286,12 @@
         data = load();
         console.log('data from localStorage:');
         console.log(data)
-        if(data.categories) {
+        if(data) {
             render(data.categories);
         } else {
             data = {categories : []};
         }
     }
-
-    save({});
 
 })();
 
