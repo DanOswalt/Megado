@@ -167,8 +167,22 @@
         $card.children('.task-list').remove();
         $card.find('.category-header').after("<ul class='task-list'></ul>");
         for(var i = 0; i < tasks.length; i++) {
-            var hrs_left = tasks[i].getHrsRemaining(moment(), tasks[i].deadline);
-            var color = tasks[i].getColor(hrs_left);
+
+            var deadline;
+
+            //check if the date has been turned into a moment(), after loading it needs to go through this step
+            if(moment.isMoment(tasks[i].deadline) === false) {
+                deadline = moment(tasks[i].deadline);
+                console.log("Deadline changed to moment?");
+                console.log(deadline);
+            } else { //if was made during this session, it will be a moment();
+                deadline = tasks[i].deadline;
+                console.log("Deadline is already a moment");
+                console.log(deadline);
+            }
+
+            var hrs_left = getHrsRemaining(moment(), deadline);
+            var color = getColor(hrs_left);
             var name = tasks[i].name;
             var cell =  '<li>';
                 cell += '<div class="task-cell cell-style" style="background-color:';
@@ -229,61 +243,30 @@
         this.days = days;
         var deadline_date = moment().date() + this.days; 
         this.deadline = moment().date(deadline_date).hour(23).minute(59).second(59);
-        this.countdown = {
-            level0 : {
-                     hours : 0,
-                     color : '#fc0025'
-                     },
-            level1 : {
-                     hours : 3,
-                     color : '#f995c4'
-                     },   
-            level2 : {
-                     hours : 6,
-                     color : '#fcccd3'
-                     },
-            level3 : {
-                     hours : 12,
-                     color : 'white'
-                     },  
-            level4 : {
-                     hours : 24,
-                     color : '#b9fc83'
-                     },
-            level5 : {
-                     hours : 72,
-                     color : '#71f902'
-                     },
-            level6 : {
-                     hours : 1000,
-                     color : '#16bc00'
-                     }    
-        }
-        this.hrsRemaining = this.getHrsRemaining(moment(), this.deadline);
-        this.color = this.getColor(this.hrsRemaining);
+        this.hrsRemaining = getHrsRemaining(moment(), this.deadline);
+        this.color = getColor(this.hrsRemaining);
     }
 
-    Task.prototype.getHrsRemaining = function(now, deadline) {
+    function getHrsRemaining(now, deadline) {
         return deadline.diff(now, 'hours');
     };
 
-    Task.prototype.getColor = function(hrs) {
-        if(hrs < this.countdown.level0.hours) {
-                return this.countdown.level0.color;
-            } else if(hrs < this.countdown.level1.hours) {
-                return this.countdown.level1.color;
-            } else if(hrs < this.countdown.level2.hours) {
-                return this.countdown.level2.color;
-            } else if(hrs < this.countdown.level3.hours) {
-                return this.countdown.level3.color;
-            } else if(hrs < this.countdown.level4.hours) {
-                return this.countdown.level4.color;
-            } else if(hrs < this.countdown.level5.hours) {
-                return this.countdown.level5.color;
-            } else if(hrs < this.countdown.level6.hours) {
-                return this.countdown.level6.color;
-            } else
-                return 'black';
+    function getColor(hrs) {
+        if(hrs < 0) {
+                return '#fc0025';
+            } else if(hrs < 3) {
+                return '#f995c4';
+            } else if(hrs < 6) {
+                return '#fcccd3';
+            } else if(hrs < 12) {
+                return 'white';
+            } else if(hrs < 24) {
+                return '#b9fc83';
+            } else if(hrs < 72) {
+                return '#71f902';
+            } else {
+                return '#16bc00';
+            }
     };
 
     function promptNewCategory() {
@@ -316,10 +299,10 @@
             console.log('Deadline Date:' + tasks[i].deadline_date);
             console.log('Deadline String:' + tasks[i].deadline_string);
             console.log('Deadline:' + tasks[i].deadline);
-            tasks[i].hrsRemaining = tasks[i].getHrsRemaining(moment(), tasks[i].deadline);
+            tasks[i].hrsRemaining = getHrsRemaining(moment(), tasks[i].deadline);
             console.log('Hrs Left:' + tasks[i].hrsRemaining);
             // console.log('Time remaining: ' + tasks[i].hrs_left(moment(),tasks[i].deadline));
-            tasks[i].color = tasks[i].getColor(tasks[i].hrsRemaining);
+            tasks[i].color = getColor(tasks[i].hrsRemaining);
             console.log('Color:' + tasks[i].color);
             console.log('*************************');
         }
@@ -334,9 +317,7 @@
         if(data.categories) {
             render(data.categories);
         } else {
-            data = {
-                        categories : []
-                    };
+            data = {categories : []};
         }
     }
 
