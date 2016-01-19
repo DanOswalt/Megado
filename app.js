@@ -54,8 +54,7 @@
             $taskSubmitBtn.removeClass('disabled');
         } else {
             $taskSubmitBtn.addClass('disabled');
-        };
-        
+        };       
     });
 
     //submit task name on submit arrow click
@@ -109,7 +108,7 @@
         //add and display the new task
         newTask(taskName, taskDays);
         refreshTaskDisplay($activeCategoryCard, data.categories[activeCategoryIndex].tasks);
-        //reset name and days vars
+        //reset name and days vars (make this its own function?)
         taskName = "";
         taskDays = 0;
         //disable buttons
@@ -163,24 +162,17 @@
     }
 
     function refreshTaskDisplay($card, tasks) {
-        console.log(tasks);
+        console.log($card);
         $card.children('.task-list').remove();
         $card.find('.category-header').after("<ul class='task-list'></ul>");
         for(var i = 0; i < tasks.length; i++) {
-
             var deadline;
-
             //check if the date has been turned into a moment(), after loading it needs to go through this step
             if(moment.isMoment(tasks[i].deadline) === false) {
                 deadline = moment(tasks[i].deadline);
-                console.log("Deadline changed to moment?");
-                console.log(deadline);
             } else { //if was made during this session, it will be a moment();
                 deadline = tasks[i].deadline;
-                console.log("Deadline is already a moment");
-                console.log(deadline);
             }
-
             var hrs_left = getHrsRemaining(moment(), deadline);
             var color = getColor(hrs_left);
             var name = tasks[i].name;
@@ -191,7 +183,6 @@
                 cell += '</div>';
                 cell += '</li>';
             $card.find('.task-list').append(cell);
-            console.log(hrs_left)
         }
 
     }
@@ -218,17 +209,12 @@
     function render() {
         for (var categoryIndex = 0; categoryIndex < data.categories.length; categoryIndex += 1) {
             var category = data.categories[categoryIndex];
+            displayNewCard(category);
             var $card = $('.category-card').eq(categoryIndex);
             var tasks = category.tasks;
-            displayNewCard(category);
             refreshTaskDisplay($card, tasks);
         }
     }
-
-    // function clearData() {
-    //     save({});
-    // };
-    // clearData();
 
     //classes Category and Task
 
@@ -278,6 +264,8 @@
         return name;
     }
 
+    //save data whenever new category or task is added
+
     function newCategory(name) {
         var category = new Category(name);
         data.categories.push(category);
@@ -291,35 +279,21 @@
         save(data);
     }
 
-    function printTasks(tasks) {
-        for(var i = 0; i < tasks.length; i++) {
-            console.log('*************************');
-            console.log('Name:' + tasks[i].name);
-            console.log('Days:' + tasks[i].days);
-            console.log('Deadline Date:' + tasks[i].deadline_date);
-            console.log('Deadline String:' + tasks[i].deadline_string);
-            console.log('Deadline:' + tasks[i].deadline);
-            tasks[i].hrsRemaining = getHrsRemaining(moment(), tasks[i].deadline);
-            console.log('Hrs Left:' + tasks[i].hrsRemaining);
-            // console.log('Time remaining: ' + tasks[i].hrs_left(moment(),tasks[i].deadline));
-            tasks[i].color = getColor(tasks[i].hrsRemaining);
-            console.log('Color:' + tasks[i].color);
-            console.log('*************************');
-        }
-    }
-
     if(!window.localStorage) {
         console.log('no localStorage support');
     } else {
         console.log('localStorage supported');
         data = load();
-        console.log(data);
+        console.log('data from localStorage:');
+        console.log(data)
         if(data.categories) {
             render(data.categories);
         } else {
             data = {categories : []};
         }
     }
+
+    save({});
 
 })();
 
