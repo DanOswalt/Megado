@@ -9,10 +9,40 @@ body {
 
 header {
 	text-align: center;
+	vertical-align: top;
 }
 
 h1 {
 	font-weight: bold;
+	font-size: 72px;
+}
+
+#new-cat-btn {
+	border: dashed 2px #333;
+	color: #333;
+	cursor: pointer;
+	font-size: 20px;
+	display: inline-block;
+	vertical-align: center;
+}
+
+#clear {
+	border: 2px red dashed;
+	color: red;
+	cursor: pointer;
+	font-size: 20px;
+	display: inline-block;
+	margin-bottom: 10px;
+}
+
+#grey-plus-sign {
+	color: #333;
+	padding-left: 5px;
+}
+
+#red-remove-sign {
+	color: red;
+	padding-left: 5px;	
 }
 
 ul {
@@ -50,7 +80,7 @@ li {
 }
 
 .category-header {
-	padding: 5px 10px;
+/*	padding: 5px 10px;*/
 	background-color: #333;
 	color: white;
 }
@@ -88,7 +118,6 @@ li {
 
 .new-task-btn {
 	border: dashed 2px #67dd00;
-/*	font-size: 24px;*/
 	padding: 5px 0;
 }
 
@@ -100,24 +129,20 @@ li {
 
 .taskSubmit {
 	display: inline-block;
-/*	font-size: 24px;*/
 }
 
 .daysSubmit {
 	display: inline-block;
-/*	font-size: 24px;*/
 }
 
 .daysLabel {
 	display: inline-block;
-/*	font-size: 24px;*/
 	color: #333;
 	margin-right: 30px;
 }
 
 
 .active-category {
-/*	border: #333 3px solid;*/
     background-color: #eee;
     box-shadow: 3px 3px #ccc;
 }

@@ -293,8 +293,9 @@
         }
     }
 
+    $('#clear').on('click',function(){
+        localStorage.clear();
+        $(this).css('color','green');
+    });
+
 })();
-
-
-
-
