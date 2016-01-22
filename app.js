@@ -39,7 +39,6 @@
         $activeCategoryCard = $('.category-card').eq(activeCategoryIndex);
         $cardBucket.children().removeClass('active-category');
         $(this).addClass('active-category');
-        $newTaskBtn.removeClass('hidden');
         $('.new-task-btn').addClass('hidden');
         $activeCategoryCard.find('.new-task-btn').removeClass('hidden');
     });
@@ -137,7 +136,7 @@
             card += createNewTaskFormCell();
             card += newTaskBtnHTML;
             card += "</div>";
-        $cardBucket.append(card);
+        $cardBucket.find('#new-cat-btn').before(card);
     }
 
     function createNewTaskFormCell() {

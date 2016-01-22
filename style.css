@@ -24,10 +24,10 @@ h1 {
 	font-size: 20px;
 	display: inline-block;
 	vertical-align: center;
+	margin: 14px 13px 0 13px;
 }
 
 #clear {
-	border: 2px red dashed;
 	color: red;
 	cursor: pointer;
 	font-size: 20px;
