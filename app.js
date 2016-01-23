@@ -40,11 +40,7 @@
     $cardBucket.on('click', '.category-card', function() {
         //target .category-card clicks from cardBucket
         activeCategoryIndex = $(this).index();
-        $activeCategoryCard = $('.category-card').eq(activeCategoryIndex);
-        $cardBucket.children().removeClass('active-category');
-        $(this).addClass('active-category');
-        $('.new-task-btn').addClass('hidden');
-        $activeCategoryCard.find('.new-task-btn').removeClass('hidden');
+        displayActiveCategoryCard();
     });
 
     //newTaskForm listeners:
@@ -163,6 +159,14 @@
         $('.new-task-btn').show(); //show the new task button
     }
 
+    function displayActiveCategoryCard () {
+        $activeCategoryCard = $('.category-card').eq(activeCategoryIndex); //cache the active card element
+        $cardBucket.children().removeClass('active-category'); //remove current active cat class
+        $activeCategoryCard.addClass('active-category'); //add to true active cat
+        $('.new-task-btn').addClass('hidden'); //hide any current new-task-btn instances
+        $activeCategoryCard.find('.new-task-btn').removeClass('hidden'); //show active cat's new-task-btn
+    }
+
     function displayNewTaskForm($card) {
         $card.find('.newTaskFormCell').removeClass('hidden');
     }
@@ -176,7 +180,19 @@
             card += createNewTaskFormCell();
             card += newTaskBtnHTML;
             card += "</div>";
+
+        //move the new category button
         $cardBucket.find('#new-cat-btn').before(card);
+
+        //make the newly created card the active category
+        activeCategoryIndex = data.categories.length - 1;
+        // $activeCategoryCard = $('.category-card').eq(activeCategoryIndex);
+        // $cardBucket.children().removeClass('active-category');
+        // $activeCategoryCard.addClass('active-category');
+        // $activeCategoryCard.find('.new-task-btn').removeClass('hidden');
+        displayActiveCategoryCard();
+
+
     }
 
     function createNewTaskFormCell() {
