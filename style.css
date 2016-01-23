@@ -99,10 +99,20 @@ li {
 
 .newCatFormCell {
 	display: inline-block;
-	margin-top: 14px;
+	margin-top: 4px;
 	border: dashed 2px #333;
 	color: black;
 	padding: 5px 0;
+}
+.newCatContainer {
+	display: inline-block;
+	background-color: #eee;
+    box-shadow: 3px 3px #ccc;
+    border-radius: 10px;
+	width: 250px;
+	vertical-align: top;
+	margin: 2px;
+	padding: 8px 2px 5px 2px;
 }
 
 .catNameSubmitBtn {
@@ -123,7 +133,6 @@ li {
 
 .catNameField {
 	width: 125px;
-	background-color: white;
 }
 
 .taskField {

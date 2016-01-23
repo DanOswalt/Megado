@@ -21,12 +21,11 @@
 
     //new category listener:
     $newCategoryBtn.on('click', function(){
-        // var name = promptNewCategory();
         $(this).addClass('hidden');
-        $('.newCatFormCell').removeClass('hidden');
+        $('.newCatContainer').removeClass('hidden');
         $('.catNameField').focus();
-        // var category = newCategory(name);
-        // displayNewCard(category);
+        //temporarily remove the active category
+        noActiveCategory();
     })
 
     //cardbucket listeners:
@@ -117,7 +116,7 @@
 
     function submitCatName() {
         if($('.catNameSubmitBtn').hasClass('disabled')) {return};
-        $('.newCatFormCell').addClass('hidden'); //hide name input
+        $('.newCatContainer').addClass('hidden'); //hide name input
         $('#new-cat-btn').removeClass('hidden'); //show new-cat-btn
         var category = newCategory(catName);
         //reset fields
@@ -165,6 +164,13 @@
         $activeCategoryCard.addClass('active-category'); //add to true active cat
         $('.new-task-btn').addClass('hidden'); //hide any current new-task-btn instances
         $activeCategoryCard.find('.new-task-btn').removeClass('hidden'); //show active cat's new-task-btn
+    }
+
+    function noActiveCategory() {
+        activeCategoryIndex = null;
+        $activeCategoryCard = null;
+        $cardBucket.children().removeClass('active-category');
+        $('.new-task-btn').addClass('hidden');
     }
 
     function displayNewTaskForm($card) {
