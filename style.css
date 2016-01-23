@@ -21,10 +21,10 @@ h1 {
 	border: dashed 2px #333;
 	color: #333;
 	cursor: pointer;
-	font-size: 20px;
 	display: inline-block;
 	vertical-align: center;
 	margin: 14px 13px 0 13px;
+	padding: 5px 0;
 }
 
 #clear {
@@ -80,7 +80,7 @@ li {
 }
 
 .category-header {
-/*	padding: 5px 10px;*/
+	font-size: 25px;
 	background-color: #333;
 	color: white;
 }
@@ -96,6 +96,18 @@ li {
 	padding: 5px 0;
 }
 
+.newCatFormCell {
+	display: inline-block;
+	margin-top: 14px;
+	border: dashed 2px #333;
+	color: black;
+	padding: 5px 0;
+}
+
+.catNameSubmitBtn {
+	cursor: pointer;
+}
+
 .taskInputStyle {
 	border: none;
 	background-color: #eee;
@@ -106,6 +118,11 @@ li {
 :focus {
   	outline-color: transparent;
   	outline-style: none;
+}
+
+.catNameField {
+	width: 125px;
+	background-color: white;
 }
 
 .taskField {
@@ -127,6 +144,10 @@ li {
 	margin-bottom: 3px;
 }
 
+.catNameSubmit {
+	display: inline-block;
+}
+
 .taskSubmit {
 	display: inline-block;
 }
@@ -140,7 +161,6 @@ li {
 	color: #333;
 	margin-right: 30px;
 }
-
 
 .active-category {
     background-color: #eee;

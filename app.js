@@ -12,6 +12,7 @@
     var $daysSubmitBtn = $('.daysSubmitBtn');
     var $taskField = $('.taskField');
     var $daysField = $('.daysField');
+    var catName = "";
     var taskName = "";
     var taskDays = 0;
     var activeCategoryIndex = null;
@@ -20,14 +21,17 @@
 
     //new category listener:
     $newCategoryBtn.on('click', function(){
-        var name = promptNewCategory();
-        var category = newCategory(name);
-        displayNewCard(category);
+        // var name = promptNewCategory();
+        $(this).addClass('hidden');
+        $('.newCatFormCell').removeClass('hidden');
+        $('.catNameField').focus();
+        // var category = newCategory(name);
+        // displayNewCard(category);
     })
 
     //cardbucket listeners:
     $cardBucket.on('click', '.new-task-btn', function() {
-        //target .new-task-btn clicks from cardBucket
+        // target .new-task-btn clicks from cardBucket
         $('.new-task-btn').hide();
         displayNewTaskForm($activeCategoryCard);
         $('.taskField').focus();
@@ -45,6 +49,17 @@
 
     //newTaskForm listeners:
 
+    $cardBucket.on('keyup', '.catNameField', function(){
+        //log the value and enable button if there's something typed
+        var $catNameSubmitBtn = $('.catNameSubmitBtn');
+        catName = $(this).val();
+        if(catName.length > 0) {
+            $catNameSubmitBtn.removeClass('disabled');
+        } else {
+            $catNameSubmitBtn.addClass('disabled');
+        };       
+    });
+
     $cardBucket.on('keyup', '.taskField', function(){
         //log the value and enable button if there's something typed
         var $taskSubmitBtn = $('.taskSubmitBtn');
@@ -57,6 +72,18 @@
     });
 
     //submit task name on submit arrow click
+
+    $cardBucket.on('click', '.catNameSubmitBtn', function(){
+        submitCatName();
+    });
+
+    //submit task name enter key press
+
+    $cardBucket.on('keyup', function(e){
+        if (e.which === 13) {
+            submitCatName();
+        }
+    });
 
     $cardBucket.on('click', '.taskSubmitBtn', function(){
         submitTaskName();
@@ -91,6 +118,19 @@
             $daysSubmitBtn.addClass('disabled');
         };       
     });
+
+    function submitCatName() {
+        if($('.catNameSubmitBtn').hasClass('disabled')) {return};
+        $('.newCatFormCell').addClass('hidden'); //hide name input
+        $('#new-cat-btn').removeClass('hidden'); //show new-cat-btn
+        var category = newCategory(catName);
+        //reset fields
+        catName = "";
+        $('.catNameField').val("");
+        $('.catNameSubmitBtn').addClass('disabled');
+        //display the new category
+        displayNewCard(category);      
+    }
 
     function submitTaskName() {
         if($('.taskSubmitBtn').hasClass('disabled')) {return};
@@ -143,7 +183,7 @@
         var newTaskFormHTML =  "<div class='newTaskFormCell cell-style hidden'>";
 
             //taskFieldContainer
-            newTaskFormHTML += "<div class='taskFieldContainer'>"//hide
+            newTaskFormHTML += "<div class='taskFieldContainer'>"
             newTaskFormHTML += "<input class='taskField taskInputStyle' type='text' name='name' placeholder='Task Name'>";
             newTaskFormHTML += "<div class='taskSubmit'><span class='glyphicon taskSubmitBtn glyphicon-circle-arrow-right disabled'></span></div>";
             newTaskFormHTML += "</div>";
