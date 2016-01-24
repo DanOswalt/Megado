@@ -17,6 +17,8 @@
     var taskDays = 0;
     var activeCategoryIndex = null;
 
+    var taskContainerHTML = '';
+
     //UI functions////////////////////////////////////////////////////////////////////////////////////////
 
     //new category listener:
@@ -42,7 +44,21 @@
         displayActiveCategoryCard();
     });
 
+    $cardBucket.on('click', '.task-cell', function() {
+        $('.task-properties-container').toggleClass('hidden');
+    });
+
     //newTaskForm listeners:
+
+
+    //when clicking outside of input field, escape and reset everything
+    // $cardBucket.on('blur', ':input', function(e){
+    //     console.log('clicked outside of input cell');
+    //     //if this is not a submit button
+    //     if($(e.target).hasClass('submitButton')) {
+    //         console.log('submit button clicked')
+    //     };
+    // })
 
     $cardBucket.on('keyup', '.catNameField', function(){
         //log the value and enable button if there's something typed
@@ -142,20 +158,44 @@
         //add and display the new task
         newTask(taskName, taskDays);
         refreshTaskDisplay($activeCategoryCard, data.categories[activeCategoryIndex].tasks);
-        //reset name and days vars (make this its own function?)
+        $('.new-task-btn').show(); //show the new task button
+
+        resetAndHide();
+        // //reset name and days vars (make this its own function?)
+        // taskName = "";
+        // taskDays = 0;
+        // //disable buttons
+        // $('.taskSubmitBtn').addClass('disabled');
+        // $('.daysSubmitBtn').addClass('disabled');
+        // //reset the fields
+        // $('.taskField').val("");
+        // $('.daysField').val(0);
+        // //hide the container, reset display for next new task
+        // $('.daysFieldContainer').addClass('hidden') //hide day container
+        // $('.newTaskFormCell').addClass('hidden'); //hide entire form container
+        // $('.taskFieldContainer').removeClass('hidden'); //show the task container for next time
+    }
+
+    function resetAndHide() {
+        //reset values;
+        catName = "";
         taskName = "";
         taskDays = 0;
-        //disable buttons
-        $('.taskSubmitBtn').addClass('disabled');
-        $('.daysSubmitBtn').addClass('disabled');
         //reset the fields
+        $('.catNameField').val("");
         $('.taskField').val("");
         $('.daysField').val(0);
+        //disable buttons
+        $('.catNameSubmitBtn').addClass('disabled');
+        $('.taskSubmitBtn').addClass('disabled');
+        $('.daysSubmitBtn').addClass('disabled');
         //hide the container, reset display for next new task
-        $('.daysFieldContainer').addClass('hidden') //hide day container
+        $('.newCatContainer').addClass('hidden');
+        $('.daysFieldContainer').addClass('hidden') //hide day container 
         $('.newTaskFormCell').addClass('hidden'); //hide entire form container
+        //show these things:
+        $('#new-cat-btn').removeClass('hidden'); //ensure that new category button is showing
         $('.taskFieldContainer').removeClass('hidden'); //show the task container for next time
-        $('.new-task-btn').show(); //show the new task button
     }
 
     function displayActiveCategoryCard () {
@@ -202,19 +242,19 @@
     }
 
     function createNewTaskFormCell() {
-        var newTaskFormHTML =  "<div class='newTaskFormCell cell-style hidden'>";
+        var newTaskFormHTML =  "<div class='newTaskFormCell formCell cell-style hidden'>";
 
             //taskFieldContainer
-            newTaskFormHTML += "<div class='taskFieldContainer'>"
+            newTaskFormHTML += "<div class='taskFieldContainer'>";
             newTaskFormHTML += "<input class='taskField taskInputStyle' type='text' name='name' placeholder='Task Name'>";
-            newTaskFormHTML += "<div class='taskSubmit'><span class='glyphicon taskSubmitBtn glyphicon-circle-arrow-right disabled'></span></div>";
+            newTaskFormHTML += "<div class='taskSubmit'><span class='submitButton taskSubmitBtn glyphicon glyphicon-circle-arrow-right disabled'></span></div>";
             newTaskFormHTML += "</div>";
 
             //daysFieldContainer
             newTaskFormHTML += "<div class='daysFieldContainer hidden'>"//hide
             newTaskFormHTML += "<div class='daysLabel'><span>Days:</span></div>"
             newTaskFormHTML += "<input class='daysField taskInputStyle' type='number' name='days' placeholder='0'>";
-            newTaskFormHTML += "<div class='daysSubmit'><span class='glyphicon daysSubmitBtn glyphicon-plus-sign disabled'></span></div>";
+            newTaskFormHTML += "<div class='daysSubmit'><span class='submitButton daysSubmitBtn glyphicon glyphicon-plus-sign disabled'></span></div>";
             newTaskFormHTML += "</div>";
 
             newTaskFormHTML += "</div>";
@@ -237,11 +277,33 @@
             var hrs_left = getHrsRemaining(moment(), deadline);
             var color = getColor(hrs_left);
             var name = tasks[i].name;
+            var everyDaysMsg = "Every " + tasks[i].days + " days";
+            var timeLeftMsg = "Remaining Time: " + hrs_left;
+
             var cell =  '<li>';
+                cell += '<div class="task-container">';
                 cell += '<div class="task-cell cell-style" style="background-color:';
                 cell += color + '">';
                 cell += name;
-                cell += '</div>';
+                cell += '</div>'; //close task-cell
+                cell += '<div class="task-properties-container hidden">';
+                cell += '<ul class="task-properties-list>"';
+                cell += '<li><div class="task-prop-cell prop-cell-style">';
+                cell += everyDaysMsg;
+                cell += '</div></li>';
+                cell += '<li><div class="task-prop-cell prop-cell-style">';
+                cell += timeLeftMsg;
+                cell += '</div></li>';
+                cell += '<li><div class="task-prop-cell cell-style">';
+                cell += '<div class="delete-btn">';
+                cell += '<span class="glyphicon glyphicon-minus-sign">';
+                cell += '</div>'
+                cell += '<div class="refresh-btn">';
+                cell += '<span class="glyphicon glyphicon-refresh">';
+                cell += '</div></li>';
+                cell += '</ul>';
+                cell += '</div>'; //close task-properties-container
+                cell += '</div>'; //close task-container
                 cell += '</li>';
             $card.find('.task-list').append(cell);
         }

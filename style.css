@@ -59,6 +59,31 @@ ul {
 	width: 220px;	
 }
 
+.prop-cell-style {
+	border-radius: 5px;
+	padding: 10px 20px;
+	margin: 4px auto;
+	width: 180px;
+	font-size: 14px;
+	text-align: left;
+	background-color: #ddd;
+}
+
+.delete-btn {
+	display: inline-block;
+	width: 50%;
+}
+
+.refresh-btn {
+	display: inline-block;
+	color: #67dd00;
+	width: 50%;
+}
+
+.glyphicon-minus-sign {
+	color: red;
+}
+
 li {
 	margin-left: 0px;
 }
