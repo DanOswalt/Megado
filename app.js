@@ -450,6 +450,7 @@
 
     $('#clear').on('click',function(){
         localStorage.clear();
+        $('.category-card').remove();
     });
 
 })();
