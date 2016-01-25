@@ -51,11 +51,16 @@
     $cardBucket.on('click', '.delete-btn', function() {
         var taskIndex = $(this).parents('.task-item').index();
         var categoryIndex = $(this).parents('.category-card').index();
-        console.log('task index: ' + taskIndex);
-        console.log('category index: ' + categoryIndex);
         removeTask(categoryIndex, taskIndex);
         refreshTaskDisplay($activeCategoryCard, data.categories[activeCategoryIndex].tasks);
     });
+
+    $cardBucket.on('click', '.refresh-btn', function() {
+        var taskIndex = $(this).parents('.task-item').index();
+        var categoryIndex = $(this).parents('.category-card').index();
+        refreshTask(categoryIndex, taskIndex);
+        refreshTaskDisplay($activeCategoryCard, data.categories[activeCategoryIndex].tasks);
+    }); 
 
     $cardBucket.on('keyup', '.catNameField', function(){
         //log the value and enable button if there's something typed
@@ -407,6 +412,15 @@
         console.log(typeof data.categories[categoryIndex]);
         console.log(data.categories[categoryIndex]);
         data.categories[categoryIndex].tasks.splice(taskIndex,1);
+        save(data);
+    }
+
+    function refreshTask(categoryIndex, taskIndex) {
+        var task = data.categories[categoryIndex].tasks[taskIndex];
+        var days = task.days;
+        var deadline_date = moment().date() + days;
+        task.deadline = moment().date(deadline_date).hour(23).minute(59).second(59);
+        console.log(task);
         save(data);
     }
 
