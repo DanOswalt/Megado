@@ -45,7 +45,7 @@
     });
 
     $cardBucket.on('click', '.task-cell', function() {
-        $('.task-properties-container').toggleClass('hidden');
+        $(this).next().toggleClass('hidden').slideToggle(fast); //next sibling is the task-form-container
     });
 
     //newTaskForm listeners:
@@ -278,36 +278,35 @@
             var color = getColor(hrs_left);
             var name = tasks[i].name;
             var everyDaysMsg = "Every " + tasks[i].days + " days";
-            var timeLeftMsg = "Remaining Time: " + hrs_left;
+            var timeLeftMsg = "Remaining: " + hrs_left + " hrs";
 
             var cell =  '<li>';
-                cell += '<div class="task-container">';
-                cell += '<div class="task-cell cell-style" style="background-color:';
-                cell += color + '">';
-                cell += name;
-                cell += '</div>'; //close task-cell
-                cell += '<div class="task-properties-container hidden">';
-                cell += '<ul class="task-properties-list>"';
-                cell += '<li><div class="task-prop-cell prop-cell-style">';
-                cell += everyDaysMsg;
-                cell += '</div></li>';
-                cell += '<li><div class="task-prop-cell prop-cell-style">';
-                cell += timeLeftMsg;
-                cell += '</div></li>';
-                cell += '<li><div class="task-prop-cell cell-style">';
-                cell += '<div class="delete-btn">';
-                cell += '<span class="glyphicon glyphicon-minus-sign">';
-                cell += '</div>'
-                cell += '<div class="refresh-btn">';
-                cell += '<span class="glyphicon glyphicon-refresh">';
-                cell += '</div></li>';
-                cell += '</ul>';
-                cell += '</div>'; //close task-properties-container
-                cell += '</div>'; //close task-container
+                cell +=   '<div class="task-container">';
+                cell +=     '<div class="task-cell cell-style" style="background-color:';
+                cell +=     color + '">';
+                cell +=     name;
+                cell +=     '</div>'; //close task-cell
+                cell +=     '<div class="task-properties-container hidden">';
+                cell +=       '<ul class="task-properties-list>"';
+                cell +=         '<li><div class="task-prop-cell prop-cell-style">';
+                cell +=         everyDaysMsg;
+                cell +=         '</div></li>';
+                cell +=       '<li><div class="task-prop-cell prop-cell-style">';
+                cell +=       timeLeftMsg;
+                cell +=       '</div></li>';
+                cell +=       '<li><div class="task-prop-cell cell-style buttons-container">';
+                cell +=         '<div class="delete-btn">';
+                cell +=           '<span class="glyphicon glyphicon-minus-sign">';
+                cell +=         '</div>'
+                cell +=         '<div class="refresh-btn">';
+                cell +=           '<span class="glyphicon glyphicon-refresh">';
+                cell +=         '</div></li>';
+                cell +=       '</ul>'; 
+                cell +=     '</div>'; //close task-properties-container
+                cell +=   '</div>'; //close task-container
                 cell += '</li>';
             $card.find('.task-list').append(cell);
         }
-
     }
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -402,6 +401,16 @@
         save(data);
     }
 
+    function removeCategory(index) {
+        data.splice(index,1);
+        save(data);
+    }
+
+    function removeTask(categoryIndex, taskIndex) {
+        data.categories[categoryIndex].splice(taskIndex,1);
+        save(data);
+    }
+
     if(!window.localStorage) {
         console.log('no localStorage support');
     } else {
@@ -418,7 +427,7 @@
 
     $('#clear').on('click',function(){
         localStorage.clear();
-        $(this).css('color','green');
+        $(this).css('color','yellow');
     });
 
 })();

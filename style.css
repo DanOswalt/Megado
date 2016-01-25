@@ -65,24 +65,39 @@ ul {
 	margin: 4px auto;
 	width: 180px;
 	font-size: 14px;
-	text-align: left;
 	background-color: #ddd;
+	color: #666;
+}
+
+.buttons-container {
+	padding: 0 20px;
+	margin: 0 13px;
 }
 
 .delete-btn {
 	display: inline-block;
-	width: 50%;
+	border-radius: 5px;
+	padding: 10px 20px;
+	margin: 4px 1px;
+	width: 85px;
+	color: red;
+	background-color: #ddd;
 }
 
 .refresh-btn {
 	display: inline-block;
+	padding: 10px 20px;
+	margin: 4px 1px;
+	border-radius: 5px;
 	color: #67dd00;
+	width: 85px;
 	width: 50%;
+	background-color: #ddd;
 }
 
-.glyphicon-minus-sign {
+/*.glyphicon-minus-sign {
 	color: red;
-}
+}*/
 
 li {
 	margin-left: 0px;
@@ -111,7 +126,7 @@ li {
 	color: white;
 }
 
-.task-list {
+.task-container {
 
 }
 
@@ -174,9 +189,16 @@ li {
 }
 
 .glyphicon {
-	color: #67dd00;
 	vertical-align: middle;
 	margin-bottom: 3px;
+}
+
+.glyphicon-plus-sign {
+	color: #67dd00;
+}
+
+.glyphicon-circle-arrow-right {
+	color: #67dd00;
 }
 
 .catNameSubmit {
