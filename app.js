@@ -45,20 +45,17 @@
     });
 
     $cardBucket.on('click', '.task-cell', function() {
-        $(this).next().toggleClass('hidden').slideToggle(fast); //next sibling is the task-form-container
+        $(this).next().toggleClass('hidden'); //next sibling is the task-form-container
     });
 
-    //newTaskForm listeners:
-
-
-    //when clicking outside of input field, escape and reset everything
-    // $cardBucket.on('blur', ':input', function(e){
-    //     console.log('clicked outside of input cell');
-    //     //if this is not a submit button
-    //     if($(e.target).hasClass('submitButton')) {
-    //         console.log('submit button clicked')
-    //     };
-    // })
+    $cardBucket.on('click', '.delete-btn', function() {
+        var taskIndex = $(this).parents('.task-item').index();
+        var categoryIndex = $(this).parents('.category-card').index();
+        console.log('task index: ' + taskIndex);
+        console.log('category index: ' + categoryIndex);
+        removeTask(categoryIndex, taskIndex);
+        refreshTaskDisplay($activeCategoryCard, data.categories[activeCategoryIndex].tasks);
+    });
 
     $cardBucket.on('keyup', '.catNameField', function(){
         //log the value and enable button if there's something typed
@@ -280,7 +277,7 @@
             var everyDaysMsg = "Every " + tasks[i].days + " days";
             var timeLeftMsg = "Remaining: " + hrs_left + " hrs";
 
-            var cell =  '<li>';
+            var cell =  '<li class="task-item">';
                 cell +=   '<div class="task-container">';
                 cell +=     '<div class="task-cell cell-style" style="background-color:';
                 cell +=     color + '">';
@@ -407,7 +404,9 @@
     }
 
     function removeTask(categoryIndex, taskIndex) {
-        data.categories[categoryIndex].splice(taskIndex,1);
+        console.log(typeof data.categories[categoryIndex]);
+        console.log(data.categories[categoryIndex]);
+        data.categories[categoryIndex].tasks.splice(taskIndex,1);
         save(data);
     }
 
