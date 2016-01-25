@@ -60,7 +60,16 @@
         var categoryIndex = $(this).parents('.category-card').index();
         refreshTask(categoryIndex, taskIndex);
         refreshTaskDisplay($activeCategoryCard, data.categories[activeCategoryIndex].tasks);
-    }); 
+    });
+    
+    $('#removeCategoryBtn').on('click', function() {
+        console.log('ouch');
+        if(activeCategoryIndex === null) return;
+        removeCategory(activeCategoryIndex);
+        $('.category-card').remove();
+        render(data.categories);
+    });
+
 
     $cardBucket.on('keyup', '.catNameField', function(){
         //log the value and enable button if there's something typed
@@ -404,7 +413,8 @@
     }
 
     function removeCategory(index) {
-        data.splice(index,1);
+        console.log('ouch');
+        data.categories.splice(index,1);
         save(data);
     }
 
@@ -440,7 +450,6 @@
 
     $('#clear').on('click',function(){
         localStorage.clear();
-        $(this).css('color','yellow');
     });
 
 })();
